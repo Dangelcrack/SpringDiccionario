@@ -35,6 +35,15 @@ public class PalabraController {
     @CrossOrigin
     @PostMapping("/palabras")
     public ResponseEntity<Palabra> createPalabra(@RequestBody Palabra palabra) {
+        if (palabra.getDefiniciones() != null && !palabra.getDefiniciones().isEmpty()) {
+            for (Definicion definicion : palabra.getDefiniciones()) {
+                if (definicion.getId() == null) {
+                    definicion.setPalabra(palabra);
+                }
+            }
+        } else {
+            palabra.setDefiniciones(null);
+        }
         Palabra createdPalabra = palabraService.createPalabra(palabra);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPalabra);
     }
@@ -57,6 +66,7 @@ public class PalabraController {
     @GetMapping("/search/{categoriaGramatical}")
     public ResponseEntity<List<Palabra>> searchPalabras(@PathVariable String categoriaGramatical) {
         List<Palabra> palabrasList = palabraService.getByCategoriaGramatical(categoriaGramatical);
+        palabrasList.forEach(palabra -> palabra.setDefiniciones(null));
         return ResponseEntity.ok(palabrasList);
     }
 
@@ -82,6 +92,7 @@ public class PalabraController {
     @GetMapping("/inicial/{letra}")
     public ResponseEntity<List<Palabra>> getPalabrasByInicial(@PathVariable String letra) {
         List<Palabra> palabras = palabraService.findByInicial(letra);
+        palabras.forEach(palabra -> palabra.setDefiniciones(null));
         return ResponseEntity.ok(palabras);
     }
 

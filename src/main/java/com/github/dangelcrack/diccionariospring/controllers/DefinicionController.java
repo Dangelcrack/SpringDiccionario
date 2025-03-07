@@ -43,8 +43,8 @@ public class DefinicionController {
     }
     @CrossOrigin
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDefinicion(@PathVariable Long id) throws RecordNotFoundException {
+    public HttpStatus deleteDefinicion(@PathVariable Long id) throws RecordNotFoundException {
         definicionService.deleteDefinicion(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return HttpStatus.ACCEPTED;
     }
 }
